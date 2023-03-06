@@ -18,7 +18,7 @@
 
 using namespace std;
 //komentarz
-//komenatrz
+
 
 
 //object definition
