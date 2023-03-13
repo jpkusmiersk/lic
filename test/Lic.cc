@@ -77,6 +77,8 @@ void Lic::endJob()
   cout << "HERE Cwiczenie::endJob()" << endl;
 }
 
+int wiadomosci = 10;
+
 void Lic::analyze(
     const edm::Event& ev, const edm::EventSetup& es)
 {
