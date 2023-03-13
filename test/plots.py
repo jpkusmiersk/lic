@@ -15,6 +15,7 @@ f.ls();
 
 c1 = TCanvas('cHisto','cHisto',600,600)
 histo = gROOT.FindObject('histo')
+histo.SetLineColor(2)
 histo.Draw()
-c1.Print("histo.png")
+c1.Print("histo_E.png")
 input('press enter to exit')
