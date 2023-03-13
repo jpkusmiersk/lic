@@ -16,5 +16,5 @@ f.ls();
 c1 = TCanvas('cHisto','cHisto',600,600)
 histo = gROOT.FindObject('histo')
 histo.Draw()
-c1.Print("histo.pdf")
+c1.Print("histo.png")
 input('press enter to exit')

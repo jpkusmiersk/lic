@@ -62,7 +62,7 @@ Lic::~Lic()
 void Lic::beginJob()
 {
   //create a histogram
-  histo =new TH1D("histo","test; #GMT; #events",10, 0., 10.);
+  histo =new TH1D("histo","test; #GMT; #events",100, -3.5, 3.5);
   cout << "HERE Lic::beginJob()" << endl;
 }
 
@@ -77,15 +77,15 @@ void Lic::endJob()
   cout << "HERE Cwiczenie::endJob()" << endl;
 }
 
-int wiadomosci = 10;
 
 void Lic::analyze(
     const edm::Event& ev, const edm::EventSetup& es)
 {
+  int wiadomosci = 100;
   std::cout << " -------------------------------- HERE Cwiczenie::analyze "<< std::endl;
   bool debug = true;
   const vector<pat::Muon> & muons = ev.get(theMuonToken);
-  if (debug) std::cout <<" number of muons: " << muons.size() <<std::endl;
+  if (debug && theEventCount%wiadomosci==0) std::cout <<" number of muons: " << muons.size() <<std::endl;
   for (const auto & muon : muons) {
     if (debug) std::cout <<" reco muon pt: "<<muon.pt()<<std::endl;
     histo->Fill(muon.eta());
@@ -93,12 +93,16 @@ void Lic::analyze(
 
   const l1t::MuonBxCollection & gmts = ev.get(theGmtToken); 
   int bxNumber = 0;
+  if (theEventCount%wiadomosci==0) {
   for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it) {
     std::cout <<"GMT: "<<it->hwPt()<<std::endl;
   }
-
+  }
+  ++theEventCount;
+  if (theEventCount%wiadomosci==0) {
   //write std io
-  cout <<"*** Cwiczenie, analyze event: " << ev.id()<<" analysed event count:"<<++theEventCount << endl;
+  cout <<"*** Cwiczenie, analyze event: " << ev.id()<<" analysed event count:"<<theEventCount << endl;
+  }
 }
 
 DEFINE_FWK_MODULE(Lic);
