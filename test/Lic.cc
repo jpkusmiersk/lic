@@ -39,6 +39,7 @@ private:
   edm::ParameterSet theConfig;
   unsigned int theEventCount;
   TH1D *histo;
+  //TH1D *histo1;
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
   edm::EDGetTokenT<l1t::MuonBxCollection> theGmtToken;
@@ -63,6 +64,7 @@ void Lic::beginJob()
 {
   //create a histogram
   histo =new TH1D("histo","test; #GMT; #events",100, 0., 25.);
+  //histo1 =new TH1D("histo1","test; #GMT; #events",100, 0., 25.);
   cout << "HERE Lic::beginJob()" << endl;
 }
 
@@ -72,6 +74,7 @@ void Lic::endJob()
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
   //write histogram data
   histo->Write();
+  //histo1->Write();
   myRootFile.Close();
   delete histo;
   cout << "HERE Cwiczenie::endJob()" << endl;
@@ -85,10 +88,12 @@ void Lic::analyze(
   std::cout << " -------------------------------- HERE Cwiczenie::analyze "<< std::endl;
   bool debug = true;
   const vector<pat::Muon> & muons = ev.get(theMuonToken);
+  //const vector<l1t::MuonBxCollection> & muons = ev.get(theGmtToken);
   if (debug && theEventCount%wiadomosci==0) std::cout <<" number of muons: " << muons.size() <<std::endl;
   for (const auto & muon : muons) {
     if (debug) std::cout <<" reco muon pt: "<<muon.pt()<<std::endl;
-    histo->Fill(muon.energy());
+    histo->Fill(muon.pt());
+    //histo1->Fill(muon.energy());
   }
 
   const l1t::MuonBxCollection & gmts = ev.get(theGmtToken); 
