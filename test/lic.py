@@ -35,7 +35,7 @@ fileNames = cms.untracked.vstring(
 )
 process.source.fileNames = files
 process.source.skipEvents = cms.untracked.uint32(0)
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000))
 
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('Configuration.Geometry.GeometryDB_cff')

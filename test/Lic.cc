@@ -39,7 +39,8 @@ private:
   edm::ParameterSet theConfig;
   unsigned int theEventCount;
   TH1D *histo;
-  //TH1D *histo1;
+  TH1D *histo1;
+  TH1D *histo2;
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
   edm::EDGetTokenT<l1t::MuonBxCollection> theGmtToken;
@@ -63,8 +64,9 @@ Lic::~Lic()
 void Lic::beginJob()
 {
   //create a histogram
-  histo =new TH1D("histo","test; #GMT; #events",100, 0., 25.);
-  //histo1 =new TH1D("histo1","test; #GMT; #events",100, 0., 25.);
+  histo =new TH1D("histo","test; #GMT; #events",20, -25., 25.);
+  histo1 =new TH1D("histo1","test; #GMT; #events",20, -25., 25.);
+  histo2 =new TH1D("histo2","test; #GMT; #events",100, -25., 25.);
   cout << "HERE Lic::beginJob()" << endl;
 }
 
@@ -74,7 +76,8 @@ void Lic::endJob()
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
   //write histogram data
   histo->Write();
-  //histo1->Write();
+  histo1->Write();
+  histo2->Write();
   myRootFile.Close();
   delete histo;
   cout << "HERE Cwiczenie::endJob()" << endl;
@@ -92,17 +95,21 @@ void Lic::analyze(
   if (debug && theEventCount%wiadomosci==0) std::cout <<" number of muons: " << muons.size() <<std::endl;
   for (const auto & muon : muons) {
     if (debug) std::cout <<" reco muon pt: "<<muon.pt()<<std::endl;
-    histo->Fill(muon.pt());
-    //histo1->Fill(muon.energy());
+    histo->Fill(muon.vx());
+    histo1->Fill(muon.vy());
+    histo2->Fill(muon.vz());
   }
 
   const l1t::MuonBxCollection & gmts = ev.get(theGmtToken); 
   int bxNumber = 0;
-  if (theEventCount%wiadomosci==0) {
+  
   for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it) {
+    if (theEventCount%wiadomosci==0) {
     std::cout <<"GMT: "<<it->hwPt()<<std::endl;
+    }
+    //histo->Fill(it->hwEta());
   }
-  }
+  
   ++theEventCount;
   if (theEventCount%wiadomosci==0) {
   //write std io
