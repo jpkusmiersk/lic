@@ -35,7 +35,7 @@ fileNames = cms.untracked.vstring(
 )
 process.source.fileNames = files
 process.source.skipEvents = cms.untracked.uint32(0)
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000))
 
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('Configuration.Geometry.GeometryDB_cff')
@@ -50,10 +50,10 @@ process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1)
 process.MessageLogger.suppressWarning  = cms.untracked.vstring('Geometry','AfterSource','L1T')
 process.options = cms.untracked.PSet( wantSummary=cms.untracked.bool(False))
 
-process.praca= cms.EDAnalyzer("Lic",
+process.praca= cms.EDAnalyzer("Licjet",
   muonSrc = cms.InputTag("slimmedMuons"),
   gmtSrc = cms.InputTag("gmtStage2Digis","Muon"), 
-  outHist = cms.string("histos.root")
+  outHist = cms.string("histo.root")
 )
 
 process.MyPath = cms.Path(process.praca)

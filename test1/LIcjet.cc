@@ -9,6 +9,8 @@
 
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/L1Trigger/interface/Muon.h"
+#include "DataFormats/JetReco/interface/PFJet.h"
+#include "DataFormats/JetReco/interface/PFJetCollection.h"
 
 #include "TH1D.h"
 #include "TH2D.h"
@@ -38,10 +40,11 @@ private:
 
   edm::ParameterSet theConfig;
   unsigned int theEventCount;
-  TH1D *histo;
+  TH1D *histoj;
 
-  edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
-  edm::EDGetTokenT<l1t::MuonBxCollection> theGmtToken;
+  //edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
+  //edm::EDGetTokenT<l1t::MuonBxCollection> theGmtToken;
+  edm::EDGetTokenT< vector<pat::Jet> > theJetToken;
 
 };
 
@@ -62,7 +65,7 @@ Lic::~Lic()
 void Lic::beginJob()
 {
   //create a histogram
-  histo =new TH1D("histo","test; #GMT; #events",10, 0., 10.);
+  histoj =new TH1D("histo","test; #GMT; #events",100, -10., 10.);
   cout << "HERE Lic::beginJob()" << endl;
 }
 
@@ -71,9 +74,9 @@ void Lic::endJob()
   //make a new Root file
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
   //write histogram data
-  histo->Write();
+  histoj->Write();
   myRootFile.Close();
-  delete histo;
+  delete histoj;
   cout << "HERE Cwiczenie::endJob()" << endl;
 }
 
@@ -86,7 +89,7 @@ void Lic::analyze(
   if (debug) std::cout <<" number of muons: " << muons.size() <<std::endl;
   for (const auto & muon : muons) {
     if (debug) std::cout <<" reco muon pt: "<<muon.pt()<<std::endl;
-    histo->Fill(muon.eta());
+    //histo->Fill(muon.eta());
   }
 
   const l1t::MuonBxCollection & gmts = ev.get(theGmtToken); 
@@ -97,6 +100,15 @@ void Lic::analyze(
 
   //write std io
   cout <<"*** Cwiczenie, analyze event: " << ev.id()<<" analysed event count:"<<++theEventCount << endl;
+
+  const vector<pat::Jet> & jet = ev.get(theJetToken);
+  edm::Handle<reco::PFJetCollection> pfjetH;
+  iEvent.getByLabel("ak4PFJetsCHS", pfjetH);
+  for ( reco::PFJetCollection::const_iterator jet = pfjetH->begin(); jet != pfjetH->end(); ++jet ) {
+    double pt = jet->pt();
+    std:cout<<pt<<std::endl;
+    histoj->Fill(jet.pt());
+  }
 }
 
 DEFINE_FWK_MODULE(Lic);
