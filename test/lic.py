@@ -11,7 +11,8 @@ process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(10)
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 
 #dataDir='/afs/cern.ch/work/k/konec/data/runs/'
-dataDir='/scratch_cmsse/akalinow/CMS/Data/Run2022G/JetMET/MINIAOD/PromptReco-v1/000/362/760/00000/'
+#dataDir='/scratch_cmsse/akalinow/CMS/Data/Run2022G/JetMET/MINIAOD/PromptReco-v1/000/362/760/00000/'
+dataDir='/scratch_cmsse/akalinow/CMS/Data/Run2022G/Muon/MINIAOD/PromptReco-v1/000/362/760/00000/'
 #lsCommand='ls -1 '+dataDir+'|grep root |grep Muon_PromptReco_miniaod'
 lsCommand='ls -1 '+dataDir+'|grep root'
 print ('command: ',lsCommand)
