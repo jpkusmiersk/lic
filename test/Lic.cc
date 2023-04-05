@@ -49,8 +49,9 @@ private:
   edm::ParameterSet theConfig;
   unsigned int theEventCount;
   TH1D *histo;
-  //TH1D *histo1;
-  //TH1D *histo2;
+  TH1D *histo1;
+  TH1D *histo2;
+  TH1D *histo3;
   //TH2D *histo2D;
   //TH2D *histo2D1;
 
@@ -80,7 +81,10 @@ Lic::~Lic()
 void Lic::beginJob()
 {
   //create a histogram
-  histo =new TH1D("histo","test; #GMT; #events",100, 0., 100.);
+  histo =new TH1D("histo","test; #GMT; #events",100, -6., 6.);
+  histo1 =new TH1D("histo1","test; #GMT; #events",100, -6., 6.);
+  histo2 =new TH1D("histo2","test; #GMT; #events",100, -6., 6.);
+  histo3 =new TH1D("histo3","test; #GMT; #events",100, -6., 6.);
   //histo1 =new TH1D("histo1","test; #GMT; #events",100, -1., 12.);
   //histo2 =new TH1D("histo2","test; #GMT; #events",100, 0., 20.);
   //histo2D = new TH2D("histo2D","y,x,#entries", 100, 0., 1000., 100, 0., 4.);
@@ -94,8 +98,9 @@ void Lic::endJob()
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
   //write histogram data
   histo->Write();
-  //histo1->Write();
-  //histo2->Write();
+  histo1->Write();
+  histo2->Write();
+  histo3->Write();
   //histo2D->Write();
   //histo2D1->Write();
   myRootFile.Close();
@@ -154,12 +159,21 @@ void Lic::analyze(
   if (debug && theEventCount%wiadomosci==0) std::cout <<" number of muons: " << jets.size() <<std::endl;
   for (const auto & jet : jets) {
     if (debug && theEventCount%wiadomosci==0) std::cout <<" reco jet pt: "<<jet.pt()<<std::endl;
-    if (jet.pt()>30){
-      //histo->Fill(jet.pt());
+    if (jet.pt()>10){
+      histo->Fill(jet.eta());
       //histo1->Fill(muon.energy());
       //histo2->Fill(muon.p());
       //h_2dgaus->Fill(muon.eta(),0.);
       //x.push_back(muon.eta());
+    }
+    if(jet.pt()>20){
+      histo1->Fill(jet.eta());
+    }
+    if(jet.pt()>30){
+      histo2->Fill(jet.eta());
+    }
+    if(jet.pt()>40){
+      histo3->Fill(jet.eta());
     }
     //histo->Fill(muon.pt());
     //histo1->Fill(muon.vy());
@@ -278,7 +292,7 @@ void Lic::analyze(
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //Tu liczymy mase niezmiennicza
-  if (jets.size()==4){
+  /*if (jets.size()==4){
     double sumpx = 0;
     double sumpy = 0;
     double sumpz = 0;
@@ -295,7 +309,7 @@ void Lic::analyze(
       histo->Fill(sqrt(sumenergy*sumenergy-sumpx*sumpx-sumpy*sumpy-sumpz*sumpz));
     }
   }
-  
+  */
   
 
   ++theEventCount;
