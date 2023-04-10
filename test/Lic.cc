@@ -109,9 +109,7 @@ void Lic::endJob()
 }
 
 
-void Lic::analyze(
-    const edm::Event& ev, const edm::EventSetup& es)
-{
+void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
   int wiadomosci = 100;
   //vector<double> x;
   //vector<double> y;
@@ -122,13 +120,13 @@ void Lic::analyze(
   //if (debug && theEventCount%wiadomosci==0) std::cout <<" number of muons: " << muons.size() <<std::endl;
   for (const auto & muon : muons) {
     //if (debug) std::cout <<" reco muon pt: "<<muon.pt()<<std::endl;
-    //if (muon.phi()>1 || muon.phi()<-1){
-      //histo->Fill(muon.phi());
+    if (muon.pt()>5){
+      //histo->Fill(muon.pt());
       //histo1->Fill(muon.energy());
       //histo2->Fill(muon.p());
       //h_2dgaus->Fill(muon.eta(),0.);
       //x.push_back(muon.eta());
-    //}
+    }
     //histo->Fill(muon.pt());
     //histo1->Fill(muon.vy());
     //histo2->Fill(muon.vz());
@@ -166,13 +164,14 @@ void Lic::analyze(
       //h_2dgaus->Fill(muon.eta(),0.);
       //x.push_back(muon.eta());
     }
-    if(jet.pt()>20){
+    
+    if(jet.pt()>50){
       histo1->Fill(jet.eta());
     }
-    if(jet.pt()>30){
+    if(jet.pt()>100){
       histo2->Fill(jet.eta());
     }
-    if(jet.pt()>40){
+    if(jet.pt()>200){
       histo3->Fill(jet.eta());
     }
     //histo->Fill(muon.pt());
@@ -310,6 +309,23 @@ void Lic::analyze(
     }
   }
   */
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //delta fi miedzy dwoma dzetami
+  /*
+  if (jets.size()==2){
+    double phi1 = 0;
+    double phi2 = 0;
+    vector<double> phi;
+    for (const auto & jet : jets){
+      phi.push_back(jet.phi());
+    }
+    phi1  = phi[0];
+    phi2 = phi[1];
+    double delta_phi = abs(phi1 -  phi2);
+    if (delta_phi > M_PI) delta_phi = 2*M_PI - delta_phi;
+    histo->Fill(delta_phi);
+  }*/
   
 
   ++theEventCount;
