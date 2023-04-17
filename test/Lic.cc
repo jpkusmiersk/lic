@@ -24,6 +24,7 @@
 #include "TFile.h"
 #include <sstream>
 #include "cmath"
+#include "TEfficiency.h"
 
 
 using namespace std;
@@ -52,8 +53,10 @@ private:
   TH1D *histo1;
   TH1D *histo2;
   TH1D *histo3;
-  //TH2D *histo2D;
+  TH2D *histo2D;
   //TH2D *histo2D1;
+  TEfficiency *peta;
+  TEfficiency *peta2;
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
   edm::EDGetTokenT<l1t::MuonBxCollection> theGmtToken;
@@ -81,14 +84,16 @@ Lic::~Lic()
 void Lic::beginJob()
 {
   //create a histogram
-  histo =new TH1D("histo","test; #GMT; #events",100, -6., 6.);
+  histo =new TH1D("histo","test; #GMT; #events",100, 0., 12.);
   histo1 =new TH1D("histo1","test; #GMT; #events",100, -6., 6.);
   histo2 =new TH1D("histo2","test; #GMT; #events",100, -6., 6.);
   histo3 =new TH1D("histo3","test; #GMT; #events",100, -6., 6.);
   //histo1 =new TH1D("histo1","test; #GMT; #events",100, -1., 12.);
   //histo2 =new TH1D("histo2","test; #GMT; #events",100, 0., 20.);
-  //histo2D = new TH2D("histo2D","y,x,#entries", 100, 0., 1000., 100, 0., 4.);
+  histo2D = new TH2D("histo2D","y,x,#entries", 100, 0., 1000., 100, 0., 4.);
   //histo2D1 = new TH2D("histo2D1","y,x,#entries", 100, -4., 4, 100, -4., 4.);
+  peta = new TEfficiency("peta", "my efficiency;x;#epcilon", 100, -6., 6.);
+  peta2 = new TEfficiency("peta2", "my efficiency;x;#epcilon", 100, -6., 6.);
   cout << "HERE Lic::beginJob()" << endl;
 }
 
@@ -101,7 +106,9 @@ void Lic::endJob()
   histo1->Write();
   histo2->Write();
   histo3->Write();
-  //histo2D->Write();
+  histo2D->Write();
+  peta->Write();
+  peta2->Write();
   //histo2D1->Write();
   myRootFile.Close();
   delete histo;
@@ -113,7 +120,7 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
   int wiadomosci = 100;
   //vector<double> x;
   //vector<double> y;
-  std::cout << " -------------------------------- HERE Cwiczenie::analyze "<< std::endl;
+  //std::cout << " -------------------------------- HERE Cwiczenie::analyze "<< std::endl;
   bool debug = true;
   const vector<pat::Muon> & muons = ev.get(theMuonToken);
   //const vector<l1t::MuonBxCollection> & muons = ev.get(theGmtToken);
@@ -121,6 +128,7 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
   for (const auto & muon : muons) {
     //if (debug) std::cout <<" reco muon pt: "<<muon.pt()<<std::endl;
     if (muon.pt()>5){
+      //histo -> Fill(muons.size());
       //histo->Fill(muon.pt());
       //histo1->Fill(muon.energy());
       //histo2->Fill(muon.p());
@@ -154,10 +162,10 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
   //Tu robione sa Jesty
   const vector<pat::Jet> & jets = ev.get(theJetToken);
   //const vector<l1t::MuonBxCollection> & muons = ev.get(theGmtToken);
-  if (debug && theEventCount%wiadomosci==0) std::cout <<" number of muons: " << jets.size() <<std::endl;
+  //if (debug && theEventCount%wiadomosci==0) std::cout <<" number of muons: " << jets.size() <<std::endl;
   for (const auto & jet : jets) {
-    if (debug && theEventCount%wiadomosci==0) std::cout <<" reco jet pt: "<<jet.pt()<<std::endl;
-    if (jet.pt()>10){
+    //if (debug && theEventCount%wiadomosci==0) std::cout <<" reco jet pt: "<<jet.pt()<<std::endl;
+    /*if (jet.pt()>10){
       histo->Fill(jet.eta());
       //histo1->Fill(muon.energy());
       //histo2->Fill(muon.p());
@@ -177,14 +185,14 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
     //histo->Fill(muon.pt());
     //histo1->Fill(muon.vy());
     //histo2->Fill(muon.vz());
-  }
+  */}
 
   const l1t::JetBxCollection & gjts = ev.get(theGjtToken); 
   int bx1Number = 0;
   
   for (l1t::JetBxCollection::const_iterator it = gjts.begin(bx1Number); it != gjts.end(bx1Number); ++it) {
     if (theEventCount%wiadomosci==0) {
-      std::cout <<"GJT: "<<it->pt()<<std::endl;
+      //std::cout <<"GJT: "<<it->pt()<<std::endl;
     }
     //if (it->phi()>1 || it->phi()<-1){
         //histo1->Fill(it->phi());
@@ -291,24 +299,24 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //Tu liczymy mase niezmiennicza
-  /*if (jets.size()==4){
+  /*if (muons.size()==2){
     double sumpx = 0;
     double sumpy = 0;
     double sumpz = 0;
     double sumenergy = 0;
     double sumpt = 0;
-    for (const auto & jet : jets) {
-      sumpx += jet.px();
-      sumpy += jet.py();
-      sumpz += jet.pz();
-      sumenergy += jet.energy();
-      sumpt += jet.pt();
+    for (const auto & muon : muons) {
+      sumpx += muon.px();
+      sumpy += muon.py();
+      sumpz += muon.pz();
+      sumenergy += muon.energy();
+      sumpt += muon.pt();
     }
-    if(sumpt>20){
+    if(sumpt>10){
       histo->Fill(sqrt(sumenergy*sumenergy-sumpx*sumpx-sumpy*sumpy-sumpz*sumpz));
     }
-  }
-  */
+  }*/
+  
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //delta fi miedzy dwoma dzetami
@@ -326,12 +334,80 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
     if (delta_phi > M_PI) delta_phi = 2*M_PI - delta_phi;
     histo->Fill(delta_phi);
   }*/
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //delta fi kontra jet pt
+  /*
+  if (jets.size()==2){
+    double phi1 = 0;
+    double phi2 = 0;
+    double jetpt = 0;
+    vector<double> phi;
+    //vector<double> Jet;
+    
+    for (const auto & jet : jets){
+      if (jet.pt()>50){
+        phi.push_back(jet.phi());
+        //Jet.push_back(jet.pt());
+        cout<<"bat"<<endl;
+        jetpt = jet.pt();
+      }
+      cout<<"bat"<<endl;
+    }
+    phi1  = phi[0];
+    phi2 = phi[1];
+    //jetpt  = Jet[0];
+    //cout<<"bat"<<endl;
+    double delta_phi = abs(phi1 -  phi2);
+    if (delta_phi > M_PI) delta_phi = 2*M_PI - delta_phi;
+    histo2D -> Fill(jetpt,delta_phi);
+  }
+  */
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //Finalny rysunek
   
+  for (const auto & jet : jets) {
+    double DeltaRmin = 100000;
+    if (jet.pt()>50){
+      double jetpt = jet.pt();
+      for (const auto & muon : muons) {
+        double DeltaR = reco::deltaR(muon, jet);
+        bool bPassed;
+        if (muon.pt()>5 && muon.isGlobalMuon()){
+          bPassed = DeltaR < 0.4;
+          peta -> Fill(bPassed, jet.eta());
+        } 
+      
+      }
+    }
+    
+    
+  }
+  for (const auto & jet : jets) {
+    double DeltaRmin = 100000;
+    if (jet.pt()>50){
+      double jetpt = jet.pt();
+      for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it) {
+        double DeltaR = reco::deltaR(jet, *it);
+        bool bPassed;
+        if (it->pt()>5){
+          bPassed = DeltaR < 0.4;
+          peta2 -> Fill(bPassed, jet.eta());
+        } 
+      
+      }
+    }
+    
+    
+  }
+  
+
 
   ++theEventCount;
   if (theEventCount%wiadomosci==0) {
   //write std io
-  cout <<"*** Cwiczenie, analyze event: " << ev.id()<<" analysed event count:"<<theEventCount << endl;
+  //cout <<"*** Cwiczenie, analyze event: " << ev.id()<<" analysed event count:"<<theEventCount << endl;
   }
 }
 
