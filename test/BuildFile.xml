@@ -8,6 +8,8 @@
 <use   name="SimDataFormats/GeneratorProducts"/>
 <use   name="SimDataFormats/TrackingAnalysis"/>
 <use   name="SimGeneral/HepPDTRecord"/>
+<use   name="DataFormats/MuonReco"/>
+<use   name="DataFormats/PatCandidates"/>
 <use   name="clhep"/>
 <use   name="hepmc"/>
 <use   name="heppdt"/>
