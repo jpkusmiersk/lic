@@ -51,7 +51,11 @@ private:
   unsigned int theEventCount;
   TH1D *histo;
   TH1D *jetpt;
+  TH1D *jetpt_fullrange;
   TH1D *muonpt;
+  TH1D *muonpt_fullrange;
+  TH1D *l1tpt;
+  TH1D *l1tpt_fullrange;
   TH1D *jetdphi;
   TH1D *jeteta10;
   TH1D *jeteta50;
@@ -60,6 +64,8 @@ private:
   TH1D *deltar;
   TH1D *deltarmin;
   TH1D *deltarpik;
+  TH1D *deltarml1t;
+  TH1D *deltarml1tpik;
   TH1D *masan2m5_15_50;
   TH1D *masan2m5_15_100;
   TH1D *masan2m5_15_200;
@@ -87,6 +93,9 @@ private:
   TEfficiency *pjeta5;
   TEfficiency *pjeta10;
   TEfficiency *pjeta20;
+  TEfficiency *pjeta50;
+  TEfficiency *pjeta100;
+  TEfficiency *pjeta200;
   TEfficiency *pjeta1_5;
   TEfficiency *pjeta1_10;
   TEfficiency *pjeta1_20;
@@ -127,7 +136,11 @@ void Lic::beginJob()
   //create a histogram
   histo =new TH1D("histo","test; #GMT; #events",10, 0., 10.);
   jetpt =new TH1D("jetpt","test; #GMT; #events",1000, 0., 1000.);
+  jetpt_fullrange =new TH1D("jetpt_fullrange","test; #GMT; #events",7000, 0., 7000.);
   muonpt =new TH1D("muonpt","test; #GMT; #events",200, 0., 200.);
+  muonpt_fullrange =new TH1D("muonpt_fullrange","test; #GMT; #events",1000, 0., 1000.);
+  l1tpt =new TH1D("l1tpt","test; #GMT; #events",200, 0., 200.);
+  l1tpt_fullrange =new TH1D("l1tpt_fullrange","test; #GMT; #events",1000, 0., 1000.);
   jetdphi =new TH1D("jetdphi","test; #GMT; #events",100, 0., 3.5);
   jeteta10 =new TH1D("jeteta10","test; #GMT; #events",200, -6., 6.);
   jeteta50 =new TH1D("jeteta50","test; #GMT; #events",200, -6., 6.);
@@ -136,6 +149,8 @@ void Lic::beginJob()
   deltar =new TH1D("deltar","test; #GMT; #events",100, 0., 8.);
   deltarmin =new TH1D("deltarmin","test; #GMT; #events",100, 0., 6.);
   deltarpik =new TH1D("deltarpik","test; #GMT; #events",100, 0., 4.);
+  deltarml1t =new TH1D("deltarml1t","test; #GMT; #events",100, 0., 8.);
+  deltarml1tpik =new TH1D("deltarml1tpik","test; #GMT; #events",100, 0., 4.);
   masan2m5_15_50 =new TH1D("masan2m5_15_50","test; #GMT; #events",50, 0.5, 1.5);
   masan2m5_15_100 =new TH1D("masan2m5_15_100","test; #GMT; #events",100, 0.5, 1.5);
   masan2m5_15_200 =new TH1D("masan2m5_15_200","test; #GMT; #events",200, 0.5, 1.5);
@@ -168,6 +183,9 @@ void Lic::beginJob()
   pjeta1_5 = new TEfficiency("pjeta1_5", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
   pjeta1_10 = new TEfficiency("pjeta1_10", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
   pjeta1_20 = new TEfficiency("pjeta1_20", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
+  pjeta50 = new TEfficiency("pjeta50", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
+  pjeta100 = new TEfficiency("pjeta100", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
+  pjeta200 = new TEfficiency("pjeta200", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
   pmeta50 = new TEfficiency("pmeta50", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
   pmeta100 = new TEfficiency("pmeta100", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
   pmeta200 = new TEfficiency("pmeta200", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
@@ -186,7 +204,11 @@ void Lic::endJob()
   //write histogram data
   histo->Write();
   jetpt->Write();
+  jetpt_fullrange->Write();
   muonpt->Write();
+  muonpt_fullrange->Write();
+  l1tpt->Write();
+  l1tpt_fullrange->Write();
   jetdphi->Write();
   jeteta10->Write();
   jeteta50->Write();
@@ -195,6 +217,8 @@ void Lic::endJob()
   deltar->Write();
   deltarmin->Write();
   deltarpik->Write();
+  deltarml1t->Write();
+  deltarml1tpik->Write();
   masan2m5_15_50->Write();
   masan2m5_15_100->Write();
   masan2m5_15_200->Write();
@@ -221,6 +245,9 @@ void Lic::endJob()
   pjeta5->Write();
   pjeta10->Write();
   pjeta20->Write();
+  pjeta50->Write();
+  pjeta100->Write();
+  pjeta200->Write();
   pjeta1_5->Write();
   pjeta1_10->Write();
   pjeta1_20->Write();
@@ -251,8 +278,10 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
   for (const auto & muon : muons) {
     //if (debug) std::cout <<" reco muon pt: "<<muon.pt()<<std::endl;
     //histo -> Fill(muons.size());
+    muonpt->Fill(muon.py());
+    muonpt_fullrange->Fill(muon.py());
     if (muon.pt()>5){
-      muonpt->Fill(muon.py());
+      //muonpt->Fill(muon.py());
       //histo -> Fill(muons.size());
       //histo->Fill(muon.pt());
       //histo1->Fill(muon.energy());
@@ -272,6 +301,8 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
     if (theEventCount%wiadomosci==0) {
     //std::cout <<"GMT: "<<it->phi()<<std::endl;
     }
+    l1tpt->Fill(it->pt());
+    l1tpt_fullrange->Fill(it->pt());
     //if (it->phi()>1 || it->phi()<-1){
         //histo1->Fill(it->phi());
       //h_2dgaus->Fill(0.,it->eta()); 
@@ -292,14 +323,16 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
   for (const auto & jet : jets) {
     //cout<<"bat"<<endl;
     //if (debug && theEventCount%wiadomosci==0) std::cout <<" reco jet pt: "<<jet.pt()<<std::endl;
-    if (jet.pt()>50){
-      jetpt->Fill(jet.pt());
+    jetpt->Fill(jet.pt());
+    jetpt_fullrange->Fill(jet.pt());
+    //if (jet.pt()>50){
+      //jetpt->Fill(jet.pt());
       //histo->Fill(jets.size());
       //histo1->Fill(muon.energy());
       //histo2->Fill(muon.p());
       //h_2dgaus->Fill(muon.eta(),0.);
       //x.push_back(muon.eta());
-    }
+    //}
     if(jet.pt()>10){
       jeteta10->Fill(jet.eta());
     }
@@ -384,6 +417,17 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
     }
     deltarmin -> Fill(DeltaRmin);
     deltarpik->Fill(DeltaRmin);
+    double DeltaRminml1t  = 10000;
+    for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it){
+      if(muon.pt()>5){
+        double DeltaRml1t = reco::deltaR(muon,*it);
+        if(DeltaRml1t<DeltaRminml1t){
+          DeltaRminml1t = DeltaRml1t;
+        }
+        deltarml1t->Fill(DeltaRml1t);
+      }
+    }
+    deltarml1tpik->Fill(DeltaRminml1t);
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -393,7 +437,7 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
     double jetmin = 0;
     double DeltaRmin = 100000;
     for (const auto & muon : muons) {
-      if(muon.pt()>5){
+      if(muon.pt()>5 && muon.isMediumMuon()){
         double etamuon = muon.eta();
         double DeltaR = reco::deltaR(muon, jet);
         if(DeltaR<DeltaRmin){
@@ -587,6 +631,7 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
     bool bPassed5 = 0;
     bool bPassed10 = 0;
     bool bPassed20 = 0;
+    bool bPassed50 = 0;
     bool bPassed1_5 = 0;
     bool bPassed1_10 = 0;
     bool bPassed1_20 = 0;
@@ -596,12 +641,34 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
       double DeltaR = deltaR(muon, jet);
       if(DeltaR>0.2) continue;
       if(muon.pt()>5) bPassed5 = true;
+      if(muon.pt()>5) bPassed50 = true;
       if(muon.pt()>10) bPassed10 = true;
       if(muon.pt()>24) bPassed20 = true;
     }
     pjeta5 -> Fill(bPassed5, jet.eta());
     pjeta10 -> Fill(bPassed10, jet.eta());
     pjeta20 -> Fill(bPassed20, jet.eta());
+    pjeta50 -> Fill(bPassed50, jet.eta());
+    if(jet.pt()<100) continue;
+    bool bPassed100 = 0;
+    for (const auto & muon : muons) {
+      if(!muon.isGlobalMuon()) continue;
+      if(!muon.isMediumMuon()) continue;
+      double DeltaR = deltaR(muon, jet);
+      if(DeltaR>0.2) continue;
+      if(muon.pt()>5) bPassed100 = true;
+    }
+    pjeta100 -> Fill(bPassed100, jet.eta());
+    if(jet.pt()<200) continue;
+    bool bPassed200 = 0;
+    for (const auto & muon : muons) {
+      if(!muon.isGlobalMuon()) continue;
+      if(!muon.isMediumMuon()) continue;
+      double DeltaR = deltaR(muon, jet);
+      if(DeltaR>0.2) continue;
+      if(muon.pt()>5) bPassed200 = true;
+    }
+    pjeta200 -> Fill(bPassed200, jet.eta());
 
     for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it){
       if(it->hwQual()<12) continue;
@@ -692,14 +759,14 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
   }
 
   for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it){
-    if(it->pt()<5) continue;
+    if(it->pt()<15) continue; //15GeV
     bool bPassedm1t = 0;
     for (const auto & muon : muons) {
       if(it->hwQual()<12) continue;
       if(!muon.isGlobalMuon()) continue;
       if(!muon.isMediumMuon()) continue;
       double DeltaR = deltaR(muon, *it);
-      if(DeltaR>0.2) continue;
+      if(DeltaR>0.5) continue;
       if(muon.pt()>5) bPassedm1t = true;
       
     }
@@ -708,14 +775,14 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
   }
 
   for (const auto & muon : muons) {
-    if(muon.pt()<5) continue;
+    if(muon.pt()<10) continue; //Wieksze niz 10 GeV
     bool bPassedl1tm = 0;
     for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it){
       if(it->hwQual()<12) continue;
       if(!muon.isGlobalMuon()) continue;
       if(!muon.isMediumMuon()) continue;
       double DeltaR = deltaR(muon, *it);
-      if(DeltaR>0.2) continue;
+      if(DeltaR>0.5) continue;
       if(it->pt()>5) bPassedl1tm = true;
     }
     pml1t5 -> Fill(bPassedl1tm, muon.eta());
