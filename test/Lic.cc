@@ -138,9 +138,9 @@ void Lic::beginJob()
   jetpt =new TH1D("jetpt","test; #GMT; #events",1000, 0., 1000.);
   jetpt_fullrange =new TH1D("jetpt_fullrange","test; #GMT; #events",7000, 0., 7000.);
   muonpt =new TH1D("muonpt","test; #GMT; #events",200, 0., 200.);
-  muonpt_fullrange =new TH1D("muonpt_fullrange","test; #GMT; #events",1000, 0., 1000.);
+  muonpt_fullrange =new TH1D("muonpt_fullrange","test; #GMT; #events",7000, 0., 7000.);
   l1tpt =new TH1D("l1tpt","test; #GMT; #events",200, 0., 200.);
-  l1tpt_fullrange =new TH1D("l1tpt_fullrange","test; #GMT; #events",1000, 0., 1000.);
+  l1tpt_fullrange =new TH1D("l1tpt_fullrange","test; #GMT; #events",300, 0., 300.);
   jetdphi =new TH1D("jetdphi","test; #GMT; #events",100, 0., 3.5);
   jeteta10 =new TH1D("jeteta10","test; #GMT; #events",200, -6., 6.);
   jeteta50 =new TH1D("jeteta50","test; #GMT; #events",200, -6., 6.);
@@ -151,9 +151,9 @@ void Lic::beginJob()
   deltarpik =new TH1D("deltarpik","test; #GMT; #events",100, 0., 4.);
   deltarml1t =new TH1D("deltarml1t","test; #GMT; #events",100, 0., 8.);
   deltarml1tpik =new TH1D("deltarml1tpik","test; #GMT; #events",100, 0., 4.);
-  masan2m5_15_50 =new TH1D("masan2m5_15_50","test; #GMT; #events",50, 0.5, 1.5);
-  masan2m5_15_100 =new TH1D("masan2m5_15_100","test; #GMT; #events",100, 0.5, 1.5);
-  masan2m5_15_200 =new TH1D("masan2m5_15_200","test; #GMT; #events",200, 0.5, 1.5);
+  masan2m5_15_50 =new TH1D("masan2m5_15_50","test; #GMT; #events",75, 0., 1.5);
+  masan2m5_15_100 =new TH1D("masan2m5_15_100","test; #GMT; #events",150, 0., 1.5);
+  masan2m5_15_200 =new TH1D("masan2m5_15_200","test; #GMT; #events",300, 0., 1.5);
   masan2m0_12 =new TH1D("masan2m0_12","test; #GMT; #events",240, 0., 12.);
   masan2m0_120 =new TH1D("masan2m0_120","test; #GMT; #events",240, 0., 120.);
   vertex =new TH1D("vertex","test; #GMT; #events",240, 0., 12.);
