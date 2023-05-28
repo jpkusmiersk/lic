@@ -107,6 +107,8 @@ private:
   TEfficiency *pmeta1_200;
   TEfficiency *pml1t5;
   TEfficiency *pl1tm5;
+  TEfficiency *pjetamuon50;
+  TEfficiency *pjetal1t50;
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
   edm::EDGetTokenT<l1t::MuonBxCollection> theGmtToken;
@@ -194,6 +196,8 @@ void Lic::beginJob()
   pmeta1_200 = new TEfficiency("pmeta1_200", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
   pml1t5 = new TEfficiency("pml1t5", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
   pl1tm5 = new TEfficiency("pl1tm5", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
+  pjetamuon50 = new TEfficiency("pjetamuon50", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
+  pjetal1t50 = new TEfficiency("pjetal1t50", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
   cout << "HERE Lic::beginJob()" << endl;
 }
 
@@ -259,6 +263,8 @@ void Lic::endJob()
   pmeta1_200->Write();
   pml1t5->Write();
   pl1tm5->Write();
+  pjetamuon50->Write();
+  pjetal1t50->Write();
   //histo2D1->Write();
   myRootFile.Close();
   delete histo;
@@ -788,7 +794,40 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
     pml1t5 -> Fill(bPassedl1tm, muon.eta());
   }
 
-  
+  for (const auto & muon : muons) {
+    if(muon.pt()<50) continue;
+    bool bPassedmuon50 = 0;
+    for (const auto & jet : jets) {
+      if(jet.pt()<100) continue;
+      double DeltaR = deltaR(muon,  jet);
+      if(DeltaR<0.8) continue;
+      for (const auto & muon : muons) {
+        if(!muon.isGlobalMuon()) continue;
+        if(!muon.isMediumMuon()) continue;
+        double DeltaR2 = deltaR(muon, jet);
+        if(DeltaR2>0.2) continue;
+        if(muon.pt()>50) bPassedmuon50 = true;
+      }
+      pjetamuon50 -> Fill(bPassedmuon50, jet.eta());
+    }
+  }
+
+  for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it) {
+    if(it->pt()<50) continue;
+    bool bPassedl1t50 = 0;
+    for (const auto & jet : jets) {
+      if(jet.pt()<100) continue;
+      double DeltaR = deltaR(*it,  jet);
+      if(DeltaR<0.8) continue;
+      for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it) {
+        if(it->hwQual()<12) continue;
+        double DeltaR2 = deltaR(*it, jet);
+        if(DeltaR2>0.2) continue;
+        if(it->pt()>50) bPassedl1t50 = true;
+      }
+      pjetal1t50 -> Fill(bPassedl1t50, jet.eta());
+    }
+  }
   
 
 

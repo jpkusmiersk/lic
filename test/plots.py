@@ -482,6 +482,8 @@ pmeta1_100 = gROOT.FindObject('pmeta1_100')
 pmeta1_200 = gROOT.FindObject('pmeta1_200')
 pml1t5 = gROOT.FindObject('pml1t5')
 pl1tm5 = gROOT.FindObject('pl1tm5')
+pjetamuon50 = gROOT.FindObject('pjetamuon50')
+pjetal1t50 = gROOT.FindObject('pjetal1t50')
 
 #/////////////////////////////////////////////////////
 
@@ -618,6 +620,24 @@ legend.AddEntry("pjeta100","jets p_{T}>100GeV","f")
 legend.AddEntry("pjeta200","jets p_{T}>200GeV","f")
 legend.Draw()
 c24.Print("probability_muon_jet_catsjet.png")
+
+#////////////////////////////////////////////////
+
+ca = TCanvas('cHisto','cHisto',600,600,700,500)
+pjetamuon50.Draw("AP")
+pjetamuon50.SetTitle('Probabilty; jets \eta; Probability')
+pjetamuon50.SetMarkerColor(3)
+#peta.SetMarkerStyle(4)
+pjetamuon50.SetLineColor(3)
+pjetal1t50.Draw("SAME")
+pjetal1t50.SetMarkerColor(2)
+pjetal1t50.SetLineColor(2)
+legend = TLegend(0.4,0.8,0.7,0.9)
+legend.SetTextSize(0.03)
+legend.AddEntry("pjetamuon50","muon PAT p_{T}>50GeV","f")
+legend.AddEntry("pjetal1t50","muon L1T p_{T}>50GeV","f")
+legend.Draw()
+ca.Print("probability_glowne.png")
 '''
 pjeta5 = gROOT.FindObject('pjeta5')
 pjeta10 = gROOT.FindObject('pjeta10')
