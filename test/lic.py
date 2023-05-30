@@ -11,7 +11,8 @@ process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(10)
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 
 #dataDir='/afs/cern.ch/work/k/konec/data/runs/'
-dataDir='/scratch_cmsse/konec/data/2022G_JetMET/'
+#dataDir='/scratch_cmsse/konec/data/2022G_JetMET/'
+dataDir='/scratch_cmsse/konec/data/2022G_Muon/'
 #dataDir='/scratch_cmsse/akalinow/CMS/Data/Run2022G/JetMET/MINIAOD/PromptReco-v1/000/362/760/00000/'
 #dataDir='/scratch_cmsse/akalinow/CMS/Data/Run2022G/Muon/MINIAOD/PromptReco-v1/000/362/760/00000/'
 #lsCommand='ls -1 '+dataDir+'|grep root |grep Muon_PromptReco_miniaod'
@@ -37,7 +38,7 @@ fileNames = cms.untracked.vstring(
 )
 process.source.fileNames = files
 process.source.skipEvents = cms.untracked.uint32(0)
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100000000))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1))
 
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('Configuration.Geometry.GeometryDB_cff')
