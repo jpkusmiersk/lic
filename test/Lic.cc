@@ -102,12 +102,14 @@ private:
   TEfficiency *pjeta50;
   TEfficiency *pjeta100;
   TEfficiency *pjeta200;
+  TEfficiency *pjeta200_24;
   TEfficiency *pjeta1_5;
   TEfficiency *pjeta1_10;
   TEfficiency *pjeta1_20;
   TEfficiency *pjeta1_50;
   TEfficiency *pjeta1_100;
   TEfficiency *pjeta1_200;
+  TEfficiency *pjeta1_200_24;
   TEfficiency *pmeta50;
   TEfficiency *pmeta100;
   TEfficiency *pmeta200;
@@ -149,7 +151,7 @@ void Lic::beginJob()
   jetpt =new TH1D("jetpt","test; #GMT; #events",1000, 0., 1000.);
   jetpt_fullrange =new TH1D("jetpt_fullrange","test; #GMT; #events",70, 0., 7000.);
   muonpt =new TH1D("muonpt","test; #GMT; #events",200, 0., 200.);
-  muonpt_fullrange =new TH1D("muonpt_fullrange","test; #GMT; #events",70, 0., 7000.);
+  muonpt_fullrange =new TH1D("muonpt_fullrange","test; #GMT; #events",100, 0., 10000.);
   l1tpt =new TH1D("l1tpt","test; #GMT; #events",200, 0., 200.);
   l1tpt_fullrange =new TH1D("l1tpt_fullrange","test; #GMT; #events",300, 0., 300.);
   jetdphi =new TH1D("jetdphi","test; #GMT; #events",100, 0., 3.5);
@@ -167,7 +169,7 @@ void Lic::beginJob()
   masan2m5_15_200 =new TH1D("masan2m5_15_200","test; #GMT; #events",300, 0., 1.5);
   masan2m0_12 =new TH1D("masan2m0_12","test; #GMT; #events",240, 0., 12.);
   masan2m0_120 =new TH1D("masan2m0_120","test; #GMT; #events",240, 0., 120.);
-  vertex =new TH1D("vertex","test; #GMT; #events",240, 0., 12.);
+  vertex =new TH1D("vertex","test; #GMT; #events",240, 0.01, 12.);
   jetcount50 =new TH1D("jetcount50","test; #GMT; #events",10, 0., 10.);
   jetcount100 =new TH1D("jetcount100","test; #GMT; #events",10, 0., 10.);
   jetcount200 =new TH1D("jetcount200","test; #GMT; #events",10, 0., 10.);
@@ -203,9 +205,11 @@ void Lic::beginJob()
   pjeta50 = new TEfficiency("pjeta50", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
   pjeta100 = new TEfficiency("pjeta100", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
   pjeta200 = new TEfficiency("pjeta200", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
+  pjeta200_24 = new TEfficiency("pjeta200_24", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
   pjeta1_50 = new TEfficiency("pjeta1_50", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
   pjeta1_100 = new TEfficiency("pjeta1_100", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
   pjeta1_200 = new TEfficiency("pjeta1_200", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
+  pjeta1_200_24 = new TEfficiency("pjeta1_200_24", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
   pmeta50 = new TEfficiency("pmeta50", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
   pmeta100 = new TEfficiency("pmeta100", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
   pmeta200 = new TEfficiency("pmeta200", "my efficiency;x;#epcilon", 250, -2.5, 2.5);
@@ -276,12 +280,14 @@ void Lic::endJob()
   pjeta50->Write();
   pjeta100->Write();
   pjeta200->Write();
+  pjeta200_24->Write();
   pjeta1_5->Write();
   pjeta1_10->Write();
   pjeta1_20->Write();
   pjeta1_50->Write();
   pjeta1_100->Write();
   pjeta1_200->Write();
+  pjeta1_200_24->Write();
   pmeta50->Write();
   pmeta100->Write();
   pmeta200->Write();
@@ -450,10 +456,25 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
     }
     deltarmin -> Fill(DeltaRmin);
     deltarpik->Fill(DeltaRmin);
+    /*
     double DeltaRminml1t  = 10000;
     for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it){
       if(muon.pt()>5){
         double DeltaRml1t = reco::deltaR(muon,*it);
+        if(DeltaRml1t<DeltaRminml1t){
+          DeltaRminml1t = DeltaRml1t;
+        }
+        deltarml1t->Fill(DeltaRml1t);
+      }
+    }
+    deltarml1tpik->Fill(DeltaRminml1t);
+    */
+  }
+  for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it){
+    double DeltaRminml1t  = 10000;
+    for (const auto & jet : jets) {
+      if(it->pt()>5){
+        double DeltaRml1t = reco::deltaR(*it, jet);
         if(DeltaRml1t<DeltaRminml1t){
           DeltaRminml1t = DeltaRml1t;
         }
@@ -721,22 +742,28 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
     if(jet.pt()<200) continue;
     bool bPassed200 = 0;
     bool bPassed1_200 = 0;
+    bool bPassed200_24 = 0;
+    bool bPassed1_200_24 = 0;
     for (const auto & muon : muons) {
       if(!muon.isGlobalMuon()) continue;
       if(!muon.isMediumMuon()) continue;
       double DeltaR = deltaR(muon, jet);
       if(DeltaR>0.2) continue;
       if(muon.pt()>5) bPassed200 = true;
+      if(muon.pt()>24) bPassed200_24 = true;
     }
     pjeta200 -> Fill(bPassed200, jet.eta());
+    pjeta200_24 -> Fill(bPassed200_24, jet.eta());
 
     for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it) {
       if(it->hwQual()<12) continue;
       double DeltaR  = deltaR(*it, jet);
       if(DeltaR>0.2) continue;
       if(it->pt()>5) bPassed1_200 = true;
+      if(it->pt()>24) bPassed1_200_24 = true;
     }
     pjeta1_200 -> Fill(bPassed1_200, jet.eta());
+    pjeta1_200_24 -> Fill(bPassed1_200_24, jet.eta());
 
     /**
       bool bPassed = 0;
