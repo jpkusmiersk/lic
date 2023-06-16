@@ -168,7 +168,7 @@ void Lic::beginJob()
   masan2m5_15_100 =new TH1D("masan2m5_15_100","test; #GMT; #events",150, 0., 1.5);
   masan2m5_15_200 =new TH1D("masan2m5_15_200","test; #GMT; #events",300, 0., 1.5);
   masan2m0_12 =new TH1D("masan2m0_12","test; #GMT; #events",240, 0., 12.);
-  masan2m0_120 =new TH1D("masan2m0_120","test; #GMT; #events",240, 0., 120.);
+  masan2m0_120 =new TH1D("masan2m0_120","test; #GMT; #events",60., 0., 120.);
   vertex =new TH1D("vertex","test; #GMT; #events",240, 0.01, 12.);
   jetcount50 =new TH1D("jetcount50","test; #GMT; #events",10, 0., 10.);
   jetcount100 =new TH1D("jetcount100","test; #GMT; #events",10, 0., 10.);

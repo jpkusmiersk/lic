@@ -410,6 +410,27 @@ c11.Print("muon_2muon_masa_0120.png")
 
 #///////////////////////////////////////////
 
+ca1 = TCanvas('cHisto','cHisto',600,600,700,500)
+masan2m0_120 = gROOT.FindObject('masan2m0_120')
+masan2m0_120.GetYaxis().SetTitleOffset(1.5)
+masan2m0_120.GetYaxis().SetNdivisions(503)
+masan2m0_120.GetYaxis().SetTitle('Entries')
+masan2m0_120.GetXaxis().SetTitle('M [GeV]')
+masan2m0_120.SetTitle('Invariant mass of two muons')
+masan2m0_120.SetStats(0)
+masan2m0_120.SetLineColor(4)
+masan2m0_120.Draw()
+legend = TLegend(0.8,0.8,0.9,0.9)
+legend.SetTextSize(0.03)
+legend.AddEntry("jetdphi","p_{T}","f")
+ca1.SetLogy()
+#legend.Draw()
+ca1.Print("muon_2muon_masa_0120log.png")
+
+#///////////////////////////////////////////
+
+
+
 c12 = TCanvas('cHisto','cHisto',600,600,700,500)
 vertex = gROOT.FindObject('vertex')
 vertex.GetYaxis().SetTitleOffset(1.5)
