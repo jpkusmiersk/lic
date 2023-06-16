@@ -760,7 +760,7 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
       double DeltaR  = deltaR(*it, jet);
       if(DeltaR>0.2) continue;
       if(it->pt()>5) bPassed1_200 = true;
-      if(it->pt()>24) bPassed1_200_24 = true;
+      if(it->pt()>22) bPassed1_200_24 = true;
     }
     pjeta1_200 -> Fill(bPassed1_200, jet.eta());
     pjeta1_200_24 -> Fill(bPassed1_200_24, jet.eta());
