@@ -694,7 +694,7 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
       if(!muon.isGlobalMuon()) continue;
       if(!muon.isMediumMuon()) continue;
       double DeltaR = deltaR(muon, jet);
-      if(DeltaR>0.2) continue;
+      if(DeltaR>0.3) continue;
       if(muon.pt()>5) bPassed5 = true;
       if(muon.pt()>5) bPassed50 = true;
       if(muon.pt()>10) bPassed10 = true;
@@ -708,10 +708,10 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
     for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it){
       if(it->hwQual()<12) continue;
       double DeltaR  = deltaR(*it, jet);
-      if(DeltaR>0.2) continue;
+      if(DeltaR>0.3) continue;
       if(it->pt()>5) bPassed1_5 = true;
       if(it->pt()>10) bPassed1_10 = true;
-      if(it->pt()>24) bPassed1_20 = true;
+      if(it->pt()>22) bPassed1_20 = true;
       if(it->pt()>5) bPassed1_50 = true;
     }
     pjeta1_5 -> Fill(bPassed1_5, jet.eta());
@@ -726,7 +726,7 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
       if(!muon.isGlobalMuon()) continue;
       if(!muon.isMediumMuon()) continue;
       double DeltaR = deltaR(muon, jet);
-      if(DeltaR>0.2) continue;
+      if(DeltaR>0.3) continue;
       if(muon.pt()>5) bPassed100 = true;
     }
     pjeta100 -> Fill(bPassed100, jet.eta());
@@ -734,7 +734,7 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
     for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it) {
       if(it->hwQual()<12) continue;
       double DeltaR  = deltaR(*it, jet);
-      if(DeltaR>0.2) continue;
+      if(DeltaR>0.3) continue;
       if(it->pt()>5) bPassed1_100 = true;
     }
     pjeta1_100 -> Fill(bPassed1_100, jet.eta());
@@ -748,7 +748,7 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
       if(!muon.isGlobalMuon()) continue;
       if(!muon.isMediumMuon()) continue;
       double DeltaR = deltaR(muon, jet);
-      if(DeltaR>0.2) continue;
+      if(DeltaR>0.3) continue;
       if(muon.pt()>5) bPassed200 = true;
       if(muon.pt()>24) bPassed200_24 = true;
     }
@@ -758,7 +758,7 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
     for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it) {
       if(it->hwQual()<12) continue;
       double DeltaR  = deltaR(*it, jet);
-      if(DeltaR>0.2) continue;
+      if(DeltaR>0.3) continue;
       if(it->pt()>5) bPassed1_200 = true;
       if(it->pt()>22) bPassed1_200_24 = true;
     }
@@ -813,7 +813,7 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
       if(!muon.isGlobalMuon()) continue;
       if(!muon.isMediumMuon()) continue;
       double DeltaR = deltaR(muon, jet);
-      if(DeltaR>0.2) continue;
+      if(DeltaR>0.3) continue;
       if(jet.pt()>50) bPassedm50 = true;
       if(jet.pt()>100) bPassedm100 = true;
       if(jet.pt()>200) bPassedm200 = true;
@@ -831,7 +831,7 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
     for(const auto & jet : jets){
       if(it->hwQual()<12) continue;
       double DeltaR  = deltaR(*it, jet);
-      if(DeltaR>0.2) continue;
+      if(DeltaR>0.3) continue;
       if(jet.pt()>50) bPassedm1_50 = true;
       if(jet.pt()>100) bPassedm1_100 = true;
       if(jet.pt()>200) bPassedm1_200 = true;
@@ -849,7 +849,7 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
       if(!muon.isGlobalMuon()) continue;
       if(!muon.isMediumMuon()) continue;
       double DeltaR = deltaR(muon, *it);
-      if(DeltaR>0.5) continue;
+      if(DeltaR>0.3) continue;
       if(muon.pt()>5) bPassedm1t = true;
       
     }
@@ -865,7 +865,7 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
       if(!muon.isGlobalMuon()) continue;
       if(!muon.isMediumMuon()) continue;
       double DeltaR = deltaR(muon, *it);
-      if(DeltaR>0.5) continue;
+      if(DeltaR>0.3) continue;
       if(it->pt()>5) bPassedl1tm = true;
     }
     pml1t5 -> Fill(bPassedl1tm, muon.eta());
@@ -882,7 +882,7 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
         if(!muon.isGlobalMuon()) continue;
         if(!muon.isMediumMuon()) continue;
         double DeltaR2 = deltaR(muon, jet);
-        if(DeltaR2>0.2) continue;
+        if(DeltaR2>0.3) continue;
         if(muon.pt()>50) bPassedmuon50 = true;
       }
       pjetamuon50 -> Fill(bPassedmuon50, jet.eta());
@@ -895,7 +895,7 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
     for (const auto & jet : jets) {
       if(jet.pt()<100) continue;
       double DeltaR = deltaR(*it,  jet);
-      if(DeltaR<0.8) continue;
+      if(DeltaR<0.3) continue;
       for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it) {
         if(it->hwQual()<12) continue;
         double DeltaR2 = deltaR(*it, jet);
