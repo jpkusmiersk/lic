@@ -66,6 +66,8 @@ private:
   TH1D *deltarpik;
   TH1D *deltarml1t;
   TH1D *deltarml1tpik;
+  TH1D *deltarml1t20;
+  TH1D *deltarml1tpik20;
   TH1D *masan2m5_15_50;
   TH1D *masan2m5_15_100;
   TH1D *masan2m5_15_200;
@@ -164,6 +166,8 @@ void Lic::beginJob()
   deltarpik =new TH1D("deltarpik","test; #GMT; #events",100, 0., 4.);
   deltarml1t =new TH1D("deltarml1t","test; #GMT; #events",100, 0., 8.);
   deltarml1tpik =new TH1D("deltarml1tpik","test; #GMT; #events",100, 0., 4.);
+  deltarml1t20 =new TH1D("deltarml1t20","test; #GMT; #events",100, 0., 8.);
+  deltarml1tpik20 =new TH1D("deltarml1tpik20","test; #GMT; #events",100, 0., 4.);
   masan2m5_15_50 =new TH1D("masan2m5_15_50","test; #GMT; #events",75, 0., 1.5);
   masan2m5_15_100 =new TH1D("masan2m5_15_100","test; #GMT; #events",150, 0., 1.5);
   masan2m5_15_200 =new TH1D("masan2m5_15_200","test; #GMT; #events",300, 0., 1.5);
@@ -245,6 +249,8 @@ void Lic::endJob()
   deltarpik->Write();
   deltarml1t->Write();
   deltarml1tpik->Write();
+  deltarml1t20->Write();
+  deltarml1tpik20->Write();
   masan2m5_15_50->Write();
   masan2m5_15_100->Write();
   masan2m5_15_200->Write();
@@ -317,8 +323,8 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
   for (const auto & muon : muons) {
     //if (debug) std::cout <<" reco muon pt: "<<muon.pt()<<std::endl;
     //histo -> Fill(muons.size());
-    muonpt->Fill(muon.py());
-    muonpt_fullrange->Fill(muon.py());
+    muonpt->Fill(muon.pt());
+    muonpt_fullrange->Fill(muon.pt());
     if (muon.pt()>5){
       //muonpt->Fill(muon.py());
       //histo -> Fill(muons.size());
@@ -470,6 +476,7 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
     deltarml1tpik->Fill(DeltaRminml1t);
     */
   }
+  /*
   for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it){
     double DeltaRminml1t  = 10000;
     for (const auto & jet : jets) {
@@ -482,6 +489,37 @@ void Lic::analyze(const edm::Event& ev, const edm::EventSetup& es){
       }
     }
     deltarml1tpik->Fill(DeltaRminml1t);
+  }
+  */
+  for (const auto & jet : jets){
+    if (jet.pt()>50){
+      double DeltaRminml1t  = 10000;
+      for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it) {
+        if(it->pt()>5){
+          double DeltaRml1t = reco::deltaR(*it, jet);
+          if(DeltaRml1t<DeltaRminml1t){
+            DeltaRminml1t = DeltaRml1t;
+          }
+          deltarml1t->Fill(DeltaRml1t);
+        }
+      }
+      deltarml1tpik->Fill(DeltaRminml1t);
+    }
+  }
+  for (const auto & jet : jets){
+    if (jet.pt()>50){
+      double DeltaRminml1t20  = 10000;
+      for (l1t::MuonBxCollection::const_iterator it = gmts.begin(bxNumber); it != gmts.end(bxNumber); ++it) {
+        if(it->pt()>22){
+          double DeltaRml1t20 = reco::deltaR(*it, jet);
+          if(DeltaRml1t20<DeltaRminml1t20){
+            DeltaRminml1t20 = DeltaRml1t20;
+          }
+          deltarml1t20->Fill(DeltaRml1t20);
+        }
+      }
+      deltarml1tpik20->Fill(DeltaRminml1t20);
+    }
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
